@@ -858,6 +858,10 @@
                         <th scope="row">Distancia Km:</th>\
                         <td>' + (feature.properties['IND_DIST_KM'] !== null ? autolinker.link(String(feature.properties['IND_DIST_KM']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
                     </tr>\
+                    <tr>\
+                        <th scope="row">Ver más:</th>\
+                        <td><a href="../informacion.html" class="popup-link">Ver más información &rarr;</a></td>\
+                    </tr>\
                 </table>';
             var content = removeEmptyRowsFromPopupContent(popupContent, feature);
 			layer.on('popupopen', function(e) {
