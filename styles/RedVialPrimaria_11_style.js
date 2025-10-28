@@ -1,7 +1,7 @@
 var size = 0;
 var placement = 'point';
 
-var style_REDESDESALUD_3 = function(feature, resolution){
+var style_RedVialPrimaria_11 = function(feature, resolution){
     var context = {
         feature: feature,
         variables: {}
@@ -16,12 +16,12 @@ var style_REDESDESALUD_3 = function(feature, resolution){
     var textAlign = "left";
     var offsetX = 0;
     var offsetY = 0;
-    var placement = 'point';
+    var placement = 'line';
     if ("" !== null) {
         labelText = String("");
     }
     var style = [ new ol.style.Style({
-        stroke: new ol.style.Stroke({color: 'rgba(8,69,254,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0.988}),fill: new ol.style.Fill({color: 'rgba(255,245,222,1.0)'}),
+        stroke: new ol.style.Stroke({color: 'rgba(220,97,26,1.0)', lineDash: null, lineCap: 'square', lineJoin: 'bevel', width: 2.508}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
                               labelFill, placement, bufferColor,
                               bufferWidth)

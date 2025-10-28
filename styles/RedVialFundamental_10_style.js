@@ -1,7 +1,7 @@
 var size = 0;
 var placement = 'point';
 
-var style_RedVialFundamental_8 = function(feature, resolution){
+var style_RedVialFundamental_10 = function(feature, resolution){
     var context = {
         feature: feature,
         variables: {}

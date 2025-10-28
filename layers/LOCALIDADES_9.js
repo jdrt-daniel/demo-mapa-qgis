@@ -1,6 +1,6 @@
-var json_LOCALIDADES_7 = {
+var json_LOCALIDADES_9 = {
 "type": "FeatureCollection",
-"name": "LOCALIDADES_7",
+"name": "LOCALIDADES_9",
 "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
 "features": [
 { "type": "Feature", "properties": { "NOMBRE": "15 DE OCTUBRE", "NOMMUNI": "Tiraque", "NOMPROVIN": "Tiraque" }, "geometry": { "type": "Point", "coordinates": [ -65.713475030999973, -17.435939360999953 ] } },

@@ -1,7 +1,7 @@
 var size = 0;
 var placement = 'point';
 
-var style_MacroRegiones_5 = function(feature, resolution){
+var style_LOCALIDADES_9 = function(feature, resolution){
     var context = {
         feature: feature,
         variables: {}
@@ -21,7 +21,8 @@ var style_MacroRegiones_5 = function(feature, resolution){
         labelText = String("");
     }
     var style = [ new ol.style.Style({
-        stroke: new ol.style.Stroke({color: 'rgba(35,174,29,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 2.508}),fill: new ol.style.Fill({color: 'rgba(234,255,233,1.0)'}),
+        image: new ol.style.Circle({radius: 3.2 + size,
+            displacement: [0, 0], stroke: new ol.style.Stroke({color: 'rgba(82,82,82,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 0.0}), fill: new ol.style.Fill({color: 'rgba(255,255,255,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
                               labelFill, placement, bufferColor,
                               bufferWidth)

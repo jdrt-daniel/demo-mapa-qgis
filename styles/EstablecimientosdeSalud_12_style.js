@@ -1,12 +1,12 @@
 var size = 0;
 var placement = 'point';
-function categories_EstablecimientosdeSalud_9(feature, value, size, resolution, labelText,
+function categories_EstablecimientosdeSalud_12(feature, value, size, resolution, labelText,
                        labelFont, labelFill, bufferColor, bufferWidth,
                        placement) {
                 var valueStr = (value !== null && value !== undefined) ? value.toString() : 'default';
                 switch(valueStr) {case 'Hospital General':
                     return [ new ol.style.Style({
-        image: new ol.style.Circle({radius: 10.000000000000002 + size,
+        image: new ol.style.Circle({radius: 10.0 + size,
             displacement: [0, 0], stroke: new ol.style.Stroke({color: 'rgba(255,255,255,1.0)', lineDash: null, lineCap: 'butt', lineJoin: 'miter', width: 1.52}), fill: new ol.style.Fill({color: 'rgba(253,4,1,1.0)'})}),
         text: createTextStyle(feature, resolution, labelText, labelFont,
                               labelFill, placement, bufferColor,
@@ -68,7 +68,7 @@ case 'Puesto de Salud':
     })];
                     break;}};
 
-var style_EstablecimientosdeSalud_9 = function(feature, resolution){
+var style_EstablecimientosdeSalud_12 = function(feature, resolution){
     var context = {
         feature: feature,
         variables: {}
@@ -88,7 +88,7 @@ var style_EstablecimientosdeSalud_9 = function(feature, resolution){
         labelText = String("");
     }
     
-    var style = categories_EstablecimientosdeSalud_9(feature, value, size, resolution, labelText,
+    var style = categories_EstablecimientosdeSalud_12(feature, value, size, resolution, labelText,
                             labelFont, labelFill, bufferColor,
                             bufferWidth, placement);
 
