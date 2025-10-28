@@ -220,18 +220,18 @@ var lyr_EstablecimientosdeSalud_12 = new ol.layer.Vector({
     <img src="styles/legend/EstablecimientosdeSalud_12_6.png" /> Puesto de Salud<br />',
 });
 
-lyr_SateliteGoogle_0.setVisible(true);
+lyr_SateliteGoogle_0.setVisible(false);
 lyr_MapaOSM_1.setVisible(true);
-lyr_MapaGoogle_2.setVisible(true);
+lyr_MapaGoogle_2.setVisible(false);
 lyr_LimiteNacional_3.setVisible(true);
 lyr_LimiteDepartamental_4.setVisible(true);
-lyr_REDESDESALUD_5.setVisible(true);
-lyr_MUNICIPIOS_6.setVisible(true);
-lyr_MacroRegiones_7.setVisible(true);
-lyr_AreasdeInfluenciaEESS_8.setVisible(true);
+lyr_REDESDESALUD_5.setVisible(false);
+lyr_MUNICIPIOS_6.setVisible(false);
+lyr_MacroRegiones_7.setVisible(false);
+lyr_AreasdeInfluenciaEESS_8.setVisible(false);
 lyr_LOCALIDADES_9.setVisible(true);
-lyr_RedVialFundamental_10.setVisible(true);
-lyr_RedVialPrimaria_11.setVisible(true);
+lyr_RedVialFundamental_10.setVisible(false);
+lyr_RedVialPrimaria_11.setVisible(false);
 lyr_EstablecimientosdeSalud_12.setVisible(true);
 var layersList = [
   lyr_SateliteGoogle_0,
