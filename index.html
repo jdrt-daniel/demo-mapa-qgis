@@ -1,98 +1,669 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="es">
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <link rel="stylesheet" href="./resources/ol.css">
-    <link rel="stylesheet" href="resources/fontawesome-all.min.css">
-    <link href="resources/photon-geocoder-autocomplete.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="./resources/ol-layerswitcher.css">
-    <link rel="stylesheet" href="./resources/qgis2web.css">
-    <style>
-        html,
-        body {
-            background-color: #d1d1d1;
-        }
-
-        .ol-control>* {
-            background-color: #f8f8f8 !important;
-            color: #444444 !important;
-            border-radius: 0px;
-        }
-
-        .ol-attribution a,
-        .gcd-gl-input::placeholder,
-        .search-layer-input-search::placeholder {
-            color: #444444 !important;
-        }
-
-        .search-layer-input-search {
-            background-color: #f8f8f8 !important;
-        }
-
-        .ol-control>*:focus,
-        .ol-control>*:hover {
-            background-color: rgba(248, 248, 248, 0.7) !important;
-        }
-
-        .ol-control {
-            background-color: rgba(255, 255, 255, .4) !important;
-            padding: 2px !important;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa con Leaflet</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+        integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
 
     <style>
-        html,
-        body,
-        #map {
-            width: 100%;
-            height: 100%;
-            padding: 0;
+        * {
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        #map {
+            height: calc(100dvh);
+            width: 100%;
+        }
+
+        .form-check-input {
+            width: 15px;
+            height: 15px;
+        }
+
+        .fs-sm {
+            font-size: 12px;
+        }
+
+        .fs-md {
+            font-size: 14px;
+        }
+
+        .fs-lg {
+            font-size: 16px;
+        }
+
+        .leaflet-routing-alt table {
+            display: none;
+        }
+
+        .leaflet-routing-alt h3 {
+            font-size: 20px;
+            font-weight: bold;
         }
     </style>
-    <title></title>
+
 </head>
 
 <body>
-    <div id="map">
-        <div id="popup" class="ol-popup">
-            <a href="#" id="popup-closer" class="ol-popup-closer"></a>
-            <div id="popup-content"></div>
+    <div class="container-fluid">
+        <div class="row">
+
+
+
+            <!-- Panel de control izquierdo -->
+            <div class="col-md-2 p-1" style="height: 100dvh; overflow-y: auto;">
+
+                <div class="accordion" id="accordionExample">
+                    <div class="card">
+                        <div class="card-header px-2" id="headingOne">
+                            <h2 class="mb-0">
+                                <button class="btn btn-default btn-block text-left font-weight-bold" type="button"
+                                    data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"
+                                    aria-controls="collapseOne">
+                                    Capas
+                                </button>
+                            </h2>
+                        </div>
+
+                        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne"
+                            data-parent="#accordionExample">
+                            <div class="card-body p-0">
+                                <ul class="list-group">
+                                    <li class="list-group-item px-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="cbEstablecimientos"
+                                                onclick="mostrarCapa('establecimientos')" checked>
+                                            <label class="form-check-label" for="cbEstablecimientos">
+                                                Establecimientos
+                                            </label>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item px-3">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="cbRed"
+                                                    onclick="mostrarCapa('red')">
+                                                <label class="form-check-label" for="cbRed">
+                                                    Redes
+                                                </label>
+                                            </div>
+                                            <button class="btn btn-link btn-sm" data-toggle="collapse"
+                                                data-target="#contenedor-filtros-redes">
+                                                <span id="contadorRedes"></span> Ver todos
+                                            </button>
+                                        </div>
+
+                                        <div class="collapse mb-2 px-2" id="contenedor-filtros-redes"
+                                            style="background-color: #e0e8ee81;">
+                                            <!-- Los checkboxes se generarán dinámicamente -->
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item px-3">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="cbMunicipios"
+                                                    onclick="mostrarCapa('municipios')">
+                                                <label class="form-check-label" for="cbMunicipios">
+                                                    Municipios
+                                                </label>
+                                            </div>
+                                            <button class="btn btn-link btn-sm" data-toggle="collapse"
+                                                data-target="#contenedor-filtros-municipios">
+                                                <span id="contadorMunicipios"></span> Ver todos
+                                            </button>
+                                        </div>
+                                        <div class="collapse mb-2 px-2" id="contenedor-filtros-municipios"
+                                            style="max-height: 300px; overflow-y: auto; background-color: #e0e8ee81;">
+                                            <!-- Los checkboxes se generarán dinámicamente -->
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item px-3">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="cbMacroregiones"
+                                                    onclick="mostrarCapa('macroregiones')">
+                                                <label class="form-check-label fs-sm" for="cbMacroregiones">
+                                                    Macroregiones
+                                                </label>
+                                            </div>
+                                            <button class="btn btn-link btn-sm" data-toggle="collapse"
+                                                data-target="#contenedor-filtros-macroregiones">
+                                                <span id="contadorMacroregiones"></span> Ver todos
+                                            </button>
+                                        </div>
+                                        <div class="collapse mb-2 px-2" id="contenedor-filtros-macroregiones"
+                                            style="max-height: 300px; overflow-y: auto; background-color: #e0e8ee81;">
+                                            <!-- Los checkboxes se generarán dinámicamente -->
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item px-3">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="cbMacroregiones"
+                                                    onclick="mostrarCapa('areaInfluencia')">
+                                                <label class="form-check-label fs-sm" for="cbMacroregiones">
+                                                    Area de influencia
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item px-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="cbLocalidades"
+                                                onclick="mostrarCapa('localidades')">
+                                            <label class="form-check-label" for="cbLocalidades">
+                                                Localidades
+                                            </label>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item px-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="cbRedVial"
+                                                onclick="mostrarCapa('redvial')">
+                                            <label class="form-check-label" for="cbRedVial">
+                                                Red Vial
+                                            </label>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header px-2" id="headingTwo">
+                            <h2 class="mb-0">
+                                <button class="btn btn-default btn-block text-left font-weight-bold collapsed"
+                                    type="button" data-toggle="collapse" data-target="#collapseTwo"
+                                    aria-expanded="false" aria-controls="collapseTwo">
+                                    Filtros
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo"
+                            data-parent="#accordionExample">
+                            <div class="card-body px-3">
+                                <div class="row g-2">
+                                    <!-- Búsqueda por nombre/código -->
+                                    <div class="col-md-12 mb-3">
+                                        <p class="m-0 fs-sm mb-1 font-weight-bold">Buscar Establecimientos</p>
+                                        <input type="text" id="busqueda" class="form-control form-control-sm"
+                                            placeholder="Ingresa nombre o código...">
+                                    </div>
+
+                                    <!-- Búsqueda por nombre de Red -->
+                                    <div class="col-md-12 mb-3">
+                                        <p class="m-0 fs-sm mb-1 font-weight-bold">Buscar Redes</p>
+                                        <input type="text" id="busquedaRed" class="form-control form-control-sm"
+                                            placeholder="Ingresa nombre de red...">
+                                    </div>
+
+                                    <!-- Búsqueda por nombre de Municipio -->
+                                    <div class="col-md-12 mb-3">
+                                        <p class="m-0 fs-sm mb-1 font-weight-bold">Buscar Municipios</p>
+                                        <input type="text" id="busquedaMunicipio" class="form-control form-control-sm"
+                                            placeholder="Ingresa nombre de municipio...">
+                                    </div>
+
+                                    <!-- Filtros por tipo -->
+                                    <div class="col-md-12 mb-3">
+                                        <p class="m-0 fs-sm mb-1 font-weight-bold">Por tipo de establecimiento</p>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="filtro-tipo"
+                                                value="H3" id="fH3">
+                                            <label class="form-check-label fs-sm" for="fH3">
+                                                Hospital 3er nivel
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="filtro-tipo"
+                                                value="H2" id="fH2">
+                                            <label class="form-check-label fs-sm" for="fH2">
+                                                Hospital 2do nivel
+                                            </label>
+                                        </div>
+                                        <!-- <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="filtro-tipo"
+                                                value="IE" id="fIE">
+                                            <label class="form-check-label fs-sm" for="fIE">
+                                                Institución especializada
+                                            </label>
+                                        </div> -->
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="filtro-tipo"
+                                                value="CSCI" id="fCSCI">
+                                            <label class="form-check-label fs-sm" for="fCSCI">
+                                                Centro de Salud Internacion
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="filtro-tipo"
+                                                value="CSIN" id="fCSCIN">
+                                            <label class="form-check-label fs-sm" for="fCSCIN">
+                                                Centro de Salud Integral
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="filtro-tipo"
+                                                value="CSA" id="fCSA">
+                                            <label class="form-check-label fs-sm" for="fCSA">
+                                                Centro de Salud Ambulatorio
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="filtro-tipo"
+                                                value="PS" id="fPS">
+                                            <label class="form-check-label fs-sm" for="fPS">
+                                                Puesto de Salud
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Filtros por nivel -->
+                                    <div class="col-md-12 mb-3">
+                                        <p class="m-0 fs-sm mb-1 font-weight-bold">Por nivel de establecimiento</p>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="filtro-nivel"
+                                                value="1er" id="fNivel1">
+                                            <label class="form-check-label fs-sm" for="fNivel1">
+                                                1er nivel
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="filtro-nivel"
+                                                value="2do" id="fNivel2">
+                                            <label class="form-check-label fs-sm" for="fNivel2">
+                                                2do nivel
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="filtro-nivel"
+                                                value="3er" id="fNivel3">
+                                            <label class="form-check-label fs-sm" for="fNivel3">
+                                                3er nivel
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12 mb-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="cbFiltrarPorRed"
+                                                onchange="alternarFiltroEstablecimientosPorRed()">
+                                            <label class="form-check-label fs-sm font-weight-bold"
+                                                for="cbFiltrarPorRed">
+                                                Filtrar establecimientos por red
+                                            </label>
+                                        </div>
+                                        <small class="text-muted d-block mt-1">
+                                            Muestra solo establecimientos asociados a las redes seleccionadas en la
+                                            sección de capas
+                                        </small>
+                                    </div>
+
+                                    <div class="col-md-12 mb-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="cbFiltrarPorMunicipio"
+                                                onchange="alternarFiltroEstablecimientosPorMunicipio()">
+                                            <label class="form-check-label fs-sm font-weight-bold"
+                                                for="cbFiltrarPorMunicipio">
+                                                Filtrar establecimientos por municipio
+                                            </label>
+                                        </div>
+                                        <small class="text-muted d-block mt-1">
+                                            Muestra solo establecimientos asociados a los municipios seleccionados en la
+                                            sección de capas
+                                        </small>
+                                    </div>
+
+                                    <div class="col-md-12 mb-3">
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="checkbox"
+                                                id="cbFiltrarLocalidadesPorEst"
+                                                onchange="alternarFiltroLocalidadesPorEstablecimiento()">
+                                            <label class="form-check-label fs-sm font-weight-bold"
+                                                for="cbFiltrarLocalidadesPorEst">
+                                                Filtrar por establecimiento
+                                            </label>
+                                        </div>
+                                        <small class="text-muted d-block mb-2">
+                                            Activa y haz clic en un establecimiento para ver sus localidades
+                                        </small>
+                                    </div>
+
+                                    <!-- Botones de acción -->
+                                    <div class="col-md-12">
+                                        <button class="btn btn-primary btn-sm" onclick="limpiarTodosFiltros()">
+                                            Limpiar filtros
+                                        </button>
+                                    </div>
+
+                                    <!-- Contador -->
+                                    <div class="col-md-12">
+                                        <div class="mt-2">
+                                            <span id="contador" class="fs-sm text-muted">Mostrando todos</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header" id="headingThree">
+                            <h6 class="font-weight-bold">Rutas</h6>
+                            <div class="row g-2">
+                                <div class="col-md-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input w-2 h-2" type="checkbox" id="cbRuta"
+                                            onclick="alternarInteraccionRutas()">
+                                        <label class="form-check-label" for="cbRuta">
+                                            Activar interacción
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <button class="btn btn-danger btn-sm" onclick="limpiarRuta()" id="limpiarRuta"
+                                        style="display: none;">Limpiar ruta</button>
+                                </div>
+                                <div class="col-md-12">
+                                    <small class="text-muted d-block mt-2">
+                                        Activa esta opción y haz clic en el mapa para establecer puntos de inicio y
+                                        destino.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="mt-2">
+                    <button class="btn btn-light btn-block btn-sm" onclick="manualPrint()">
+                        <i class="fas fa-print"></i> Imprimir mapa
+                    </button>
+                    <button class="btn btn-primary btn-block btn-sm" onclick="window.location.reload()">
+                        <i class="fas fa-redo"></i> Refrescar mapa
+                    </button>
+                </div>
+            </div>
+
+            <!-- Contenedor del mapa -->
+            <div class="col-md-10 px-0">
+                <div id="map"></div>
+            </div>
+
+            <div class="modal fade" id="modalServicios" data-backdrop="static" data-keyboard="false" tabindex="-1"
+                aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h6 class="modal-title" id="staticBackdropLabel">Servicios</h6>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="bodyServicios">
+                                Aqui ira la lista de servicios
+                            </div>
+                            <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="modalLocalidades" data-backdrop="static" data-keyboard="false" tabindex="-1"
+                aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h6 class="modal-title" id="staticBackdropLabel">Localidades</h6>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="bodyLocalidades">
+                                Aqui ira la lista de localidades
+                            </p>
+                            <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="modalReferencias" data-backdrop="static" data-keyboard="false" tabindex="-1"
+                aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h6 class="modal-title" id="staticBackdropLabel">Referencias</h6>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="bodyReferencias">
+                                Aqui ira la lista de referencias
+                            </p>
+                            <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
-    <script src="resources/qgis2web_expressions.js"></script>
-    <script src="./resources/functions.js"></script>
-    <script src="./resources/ol.js"></script>
-    <script src="./resources/ol-layerswitcher.js"></script>
-    <script src="resources/photon-geocoder-autocomplete.min.js"></script>
-    <script src="layers/LimiteNacional_3.js"></script>
-    <script src="layers/LimiteDepartamental_4.js"></script>
-    <script src="layers/REDESDESALUD_5.js"></script>
-    <script src="layers/MUNICIPIOS_6.js"></script>
-    <script src="layers/MacroRegiones_7.js"></script>
-    <script src="layers/AreasdeInfluenciaEESS_8.js"></script>
-    <script src="layers/LOCALIDADES_9.js"></script>
-    <script src="layers/RedVialFundamental_10.js"></script>
-    <script src="layers/RedVialPrimaria_11.js"></script>
-    <script src="layers/EstablecimientosdeSalud_12.js"></script>
-    <script src="styles/LimiteNacional_3_style.js"></script>
-    <script src="styles/LimiteDepartamental_4_style.js"></script>
-    <script src="styles/REDESDESALUD_5_style.js"></script>
-    <script src="styles/MUNICIPIOS_6_style.js"></script>
-    <script src="styles/MacroRegiones_7_style.js"></script>
-    <script src="styles/AreasdeInfluenciaEESS_8_style.js"></script>
-    <script src="styles/LOCALIDADES_9_style.js"></script>
-    <script src="styles/RedVialFundamental_10_style.js"></script>
-    <script src="styles/RedVialPrimaria_11_style.js"></script>
-    <script src="styles/EstablecimientosdeSalud_12_style.js"></script>
-    <script src="./layers/layers.js" type="text/javascript"></script>
-    <script src="./resources/Autolinker.min.js"></script>
-    <script src="./resources/qgis2web.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
+        crossorigin="anonymous"></script>
+
+    <!-- Scripts de librerías externas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+
+    <script src="./assets/js/bundle.js"></script>
+
+    <!-- Scripts de aplicación -->
+    <script src="js/rutas.js"></script>
+    <script src="js/cargarDatos.js"></script>
+    <script src="js/filtrosRedes.js"></script>
+    <script src="js/filtrosMunicipios.js"></script>
+    <script src="js/filtrosMacroregiones.js"></script>
+    <script src="js/filtrosAreaInfluencia.js"></script>
+    <script src="js/filtrosEstablecimiento.js"></script>
+    <script src="js/filtrosLocalidades.js"></script>
+    <script src="js/filtros.js"></script>
+
+    <script>
+
+
+        function generateFileName(prefix = 'mapa') {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+
+            return `${prefix}_${year}${month}${day}_${hours}${minutes}${seconds}`;
+        }
+
+        // Inicializar mapa
+        const map = L.map('map').setView([-17.3895, -66.1568], 12);
+
+        // Agregar capa base (OpenStreetMap)
+        const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        const nameFile = generateFileName();
+
+        var printer = L.easyPrint({
+            tileLayer: tiles,
+            sizeModes: ['Current', 'A4Landscape', 'A4Portrait'],
+            filename: nameFile,
+            exportOnly: true,
+            hideControlContainer: true
+        }).addTo(map);
+
+        function manualPrint() {
+            printer.printMap('CurrentSize', nameFile)
+        }
+
+        /**
+         * Carga una capa según el tipo especificado
+         * @param {string} tipo - Tipo de capa a cargar
+         */
+        function mostrarCapa(tipo) {
+            switch (tipo) {
+                case "establecimientos":
+                    cargarEstablecimientos();
+                    break;
+                case "red":
+                    cargarRed();
+                    break;
+                case "municipios":
+                    cargarMunicipios();
+                    break;
+                case "localidades":
+                    cargarLocalidades();
+                    break;
+                case "macroregiones":
+                    cargarMacroregiones();
+                    break;
+                case "areaInfluencia":
+                    cargarAreaInfluencia();
+                    break;
+                case "redvial":
+                    cargarRedVial();
+                    break;
+                default:
+                    console.warn(`Tipo de capa desconocido: ${tipo}`);
+            }
+            actualizarCheckbox(tipo);
+        }
+
+        // Event listeners para filtros
+        document.addEventListener('DOMContentLoaded', function () {
+            const inputBusqueda = document.getElementById('busqueda');
+            if (inputBusqueda) {
+                inputBusqueda.addEventListener('input', function () {
+                    const tiposSeleccionados = obtenerTiposSeleccionados();
+                    aplicarFiltrosCombinados(this.value, tiposSeleccionados);
+                });
+            }
+
+            // Event listeners para checkboxes de tipo
+            const checkboxesTipo = document.querySelectorAll('input[name="filtro-tipo"]');
+            checkboxesTipo.forEach(checkbox => {
+                checkbox.addEventListener('change', function () {
+                    const inputBusqueda = document.getElementById('busqueda');
+                    const termino = inputBusqueda ? inputBusqueda.value : "";
+                    const tiposSeleccionados = obtenerTiposSeleccionados();
+                    const nivelesSeleccionados = obtenerNivelesSeleccionados();
+
+                    // Si algún filtro por municipio o red está activo, reaplica
+                    if (filtroMunicipioActivo()) {
+                        aplicarFiltroEstablecimientosPorMunicipio();
+                    } else if (filtroRedActivo()) {
+                        aplicarFiltroEstablecimientosPorRed();
+                    } else {
+                        aplicarFiltrosAvanzados(termino, tiposSeleccionados, nivelesSeleccionados);
+                    }
+                });
+            });
+
+            // Event listeners para checkboxes de nivel
+            const checkboxesNivel = document.querySelectorAll('input[name="filtro-nivel"]');
+            checkboxesNivel.forEach(checkbox => {
+                checkbox.addEventListener('change', function () {
+                    const inputBusqueda = document.getElementById('busqueda');
+                    const termino = inputBusqueda ? inputBusqueda.value : "";
+                    const tiposSeleccionados = obtenerTiposSeleccionados();
+                    const nivelesSeleccionados = obtenerNivelesSeleccionados();
+
+                    // Si algún filtro por municipio o red está activo, reaplica
+                    if (filtroMunicipioActivo()) {
+                        aplicarFiltroEstablecimientosPorMunicipio();
+                    } else if (filtroRedActivo()) {
+                        aplicarFiltroEstablecimientosPorRed();
+                    } else {
+                        aplicarFiltrosAvanzados(termino, tiposSeleccionados, nivelesSeleccionados);
+                    }
+                });
+            });
+
+            // Sincronizar checkbox de rutas con estado actual
+            const cbRuta = document.getElementById('cbRuta');
+            if (cbRuta) {
+                cbRuta.addEventListener('change', function () {
+                    this.checked = rutasActivas();
+                });
+            }
+        });
+
+        // Event listener para búsqueda de redes
+        const inputBusquedaRed = document.getElementById('busquedaRed');
+        if (inputBusquedaRed) {
+            inputBusquedaRed.addEventListener('input', function () {
+                filtrarRedesPorNombre(this.value);
+            });
+        }
+
+        // Event listener para búsqueda de municipios
+        const inputBusquedaMunicipio = document.getElementById('busquedaMunicipio');
+        if (inputBusquedaMunicipio) {
+            inputBusquedaMunicipio.addEventListener('input', function () {
+                filtrarMunicipiosPorNombre(this.value);
+            });
+        }
+
+        // Cargar capas base y datos iniciales
+        Promise.all([
+            cargarBolivia(),
+            cargarCochabamba(),
+            cargarRed(),
+            cargarMunicipios(),
+            cargarLocalidades(),
+            cargarMacroregiones(),
+            cargarAreaInfluencia(),
+            cargarRedVial(),
+        ]).then(() => {
+            // Una vez cargadas las redes, inicializar checkboxes
+            inicializarCheckboxesRedes('contenedor-filtros-redes');
+            inicializarCheckboxesMunicipios('contenedor-filtros-municipios');
+            inicializarCheckboxesMacroregiones('contenedor-filtros-macroregiones');
+            // inicializarCheckboxesAreaInfluencia('contenedor-filtros-areaInfluencia');
+        }).catch(error => console.error('Error cargando capas base:', error));
+
+        // Cargar establecimientos por defecto
+        cargarEstablecimientos();
+        cargarDatosExtraEstablecimiento();
+        cargarDatosServicios();
+    </script>
 </body>
 
 </html>
